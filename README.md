@@ -1,6 +1,6 @@
 # change-blindness
 
-We made a small script to run an experiment related to change blindness.
+We made a small script to run an experiment related to change blindness. [Github Repo](https://github.com/k-yoshi-tosti/change-blindness)
 
 A grid of characters is shown for a few seconds, then the screen becomes blank for a certain duration (sometimes 0), then a single character changes.
 
