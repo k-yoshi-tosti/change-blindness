@@ -35,6 +35,7 @@ GRID_START_Y = HEIGHT // 2 - GRID_SIZE * CASE_HEIGHT // 2
 
 
 def create_window() -> pygame.Surface:
+    "Initialize and create the pygame window"
     pygame.init()
     screen = pygame.display.set_mode((WIDTH, HEIGHT), pygame.DOUBLEBUF)
     pygame.display.set_caption("Change Blindness Experiment")
@@ -42,6 +43,7 @@ def create_window() -> pygame.Surface:
 
 
 def clear_screen(screen: pygame.Surface, delay: Optional[int] = None) -> None:
+    "Clear the screen and optionally wait a certain amount of time"
     screen.fill(BG_COLOR)
     pygame.display.flip()
     if delay:
@@ -49,10 +51,12 @@ def clear_screen(screen: pygame.Surface, delay: Optional[int] = None) -> None:
 
 
 def load_images() -> list[pygame.Surface]:
+    "Return four images of characters (same height but possibly different widths)"
     return [pygame.image.load(f"assets/image{i}.png").convert() for i in range(1, 5)]
 
 
 def display_instruction(screen: pygame.Surface, texts: list[str]) -> None:
+    "Display a list of strings, one per line"
     myfont = pygame.font.SysFont("Times", 32)
 
     for i, text in enumerate(texts):
@@ -69,6 +73,7 @@ def display_instruction(screen: pygame.Surface, texts: list[str]) -> None:
 
 
 def wait_for_keypress() -> None:
+    "Wait for the user to press any key"
     while True:
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN:
@@ -79,7 +84,7 @@ def wait_for_keypress() -> None:
 
 
 def wait_for_click() -> tuple[int, int, int]:
-    "Waits for the user to click, and returns (x, y, delay)"
+    "Wait for the user to click on the screen, and returns (x, y, delay) (if the user presses space or waits too long, (-1, -1, delay) is returned)"
     start_time = pygame.time.get_ticks()
     pygame.event.get()
     max_delay = 5000
@@ -99,12 +104,14 @@ def wait_for_click() -> tuple[int, int, int]:
 
 
 def gen_grid() -> list[list[int]]:
+    "Generate a random grid of size GRID_SIZE*GRID_SIZE containing random numbers between 0 and 3"
     return [[random.randrange(4) for i in range(GRID_SIZE)] for j in range(GRID_SIZE)]
 
 
 def display_grid(
     screen: pygame.Surface, images: list[pygame.Surface], grid: list[list[int]]
 ) -> None:
+    "Display the given grid on the screen, given the images"
     clear_screen(screen)
 
     for i in range(GRID_SIZE):
@@ -130,6 +137,7 @@ def run_test(
     images: list[pygame.Surface],
     delay_hide: int,
 ) -> tuple[bool, int]:
+    "Run a single experiment, waiting for delay_hide ms. Return (OK, delay)"
     grid = gen_grid()
 
     display_grid(screen, images, grid)
@@ -172,6 +180,7 @@ def run_test(
 
 
 def display_results(filename: str) -> None:
+    "Display results from the given csv file to a matplotlib plot"
     results = []
 
     with open(filename) as f:
@@ -214,6 +223,7 @@ def main() -> None:
 
     clear_screen(screen, 500)
 
+    # we shuffle wait times to ensure possible delays are uniformly distributed
     wait_times = [i * MAX_WAIT_DELAY // (NUM_DELAYS - 1) for i in range(NUM_DELAYS)] * (
         N_TRIALS // NUM_DELAYS
     )
